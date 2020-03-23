@@ -310,6 +310,18 @@ func handlePin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleIndexTemplate(w http.ResponseWriter, r *http.Request) {
+	keys, ok := r.URL.Query()["password"]
+
+	pass := "this-server-is-secret-do-not-share-outside-discord"
+	if !ok || len(keys[0]) < 1 {
+		common.LogDebugln("Url Param 'password' is missing")
+		return
+	}
+	if keys[0] != pass {
+		common.LogDebugln("Invalid password '" + keys[0] + "' vs '" + pass + "'")
+		return
+	}
+
 	if settings.RoomAccess != AccessOpen {
 		if !checkRoomAccess(w, r) {
 			common.LogDebugln("Denied access")
